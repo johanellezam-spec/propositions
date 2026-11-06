@@ -59,12 +59,41 @@ par mail pour ajuster. Le client peut télécharger le PDF et l'Excel depuis la 
 | `semaines` | durée demandée (4 si la demande ne dit rien, et le dire dans le mail) | `3` |
 
 **Zones** (noms exacts de la colonne Zone des grilles) :
-- `campus` : `{"zones": ["NANTES", "ANGERS"]}` ou `{"region": "Pays de la Loire"}` (grille TARIFS_CAMPUS)
+- `campus` : `{"france": true}` (campagne nationale = TOUTES les zones, jamais une sélection de villes),
+  `{"zones": ["NANTES", "ANGERS"]}` ou `{"region": "Pays de la Loire"}` (grille TARIFS_CAMPUS)
 - `lycees` : même format (grille TARIFS_LYCEES)
 - mixte : renseigner les deux blocs.
 
-**Facultatifs** : `periode` (tel que le client l'écrit, même flou : « en mars 2027 », « à la rentrée » ; jamais de date inventée, jamais une durée comme « sur 8 semaines » ; sans période, la page dit « dates à caler ensemble »), `zone_txt` (« de la région PACA »), `periode_courte`, `dates_txt`, `profil`, `filieres`, `frequence`,
-`cas` (ids de `assets/cas.json` pour forcer les cas clients), `masquer_cpm` / `garder_cpm`, `sous_titre`, `code`, `date`.
+## Ciblage précis (filière, type d'école, type de lycée, ville)
+
+Les demandes ciblées sont fréquentes, surtout pour les lycées. Toute précision de la demande devient un filtre
+dans le bloc `campus` ou `lycees`. Le kit garde seulement les établissements qui correspondent et calcule TOUT
+au prorata, zone par zone (méthode habituelle de Johan) : affiches, audience, budget, ODV et CPM sont multipliés
+par (établissements ciblés de la zone / établissements de la zone). Le sous-titre, le détail par zone, les
+indicateurs, le réseau et l'Excel suivent automatiquement le ciblage.
+
+| Filtre | Bloc | Valeurs (sous-chaîne, majuscules et accents indifférents) |
+|---|---|---|
+| `categories` | campus | Universités, École De Commerce, École D'Ingénieur, Iut Et But, Résidence Étudiante, Restauration Étudiante, Bibliothèque Universitaire, Arts & Design, Journalisme & Communication, Autres |
+| `disciplines` | campus | Sciences & Ingénierie, Commerce & Management, Droit & Sciences Po, Santé & Paramédical, Lettres & Sciences Humaines, Arts & Design, Sport (Staps), Journalisme & Communication, Généraliste |
+| `typologies` | campus | texte libre de la typologie d'étude (ex. « IAE », « Faculté de médecine ») |
+| `filieres` | lycees | Général, Techno, Pro |
+| `specialites` | lycees | texte libre (ex. « Cpge ») |
+| `villes` | les deux | nom de ville (ex. « Villeurbanne ») pour cibler une ville précise dans une zone |
+| `etablissements` | les deux | nom d'établissement (ex. « Sorbonne ») |
+
+Exemples :
+- « toutes les écoles d'ingénieurs » : `"campus": {"france": true, "categories": ["École D'Ingénieur"]}`
+- « le supérieur en sciences » : `"campus": {"france": true, "disciplines": ["Sciences & Ingénierie"]}`
+- « lycées professionnels de Lyon » : `"lycees": {"zones": ["LYON"], "filieres": ["Pro"]}`
+- « écoles de commerce + lycées généraux en PACA » : `"reseau": "mixte"`, `"campus": {"region": "Provence-Alpes-Côte d’Azur", "categories": ["École De Commerce"]}`, `"lycees": {"region": "Provence-Alpes-Côte d’Azur", "filieres": ["Général"]}`
+
+Règles : un ciblage sans résultat arrête le script (corriger la valeur). Ne jamais écrire soi-même le sous-titre :
+il est toujours généré par le kit (champ `sous_titre` ignoré). Si la demande est trop vague pour choisir un filtre,
+prendre le réseau complet et poser la question au client dans le mail.
+
+**Facultatifs** : `ciblage_txt` (libellé du ciblage si le libellé automatique ne convient pas), `filieres_txt`, `periode` (tel que le client l'écrit, même flou : « en mars 2027 », « à la rentrée » ; jamais de date inventée, jamais une durée comme « sur 8 semaines » ; sans période, la page dit « dates à caler ensemble »), `zone_txt` (« de la région PACA »), `periode_courte`, `dates_txt`, `profil`, `frequence`,
+`cas` (ids de `assets/cas.json` pour forcer les cas clients), `masquer_cpm` / `garder_cpm`, `code`, `date`.
 
 CPM (règle de Johan, seulement pour ces deux indicateurs) : le kit remplace automatiquement un CPM audience
 au-delà de 60 € et un CPM exposition au-delà de 1 € par un autre indicateur, et le signale en alerte.

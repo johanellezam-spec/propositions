@@ -80,7 +80,9 @@ SECTEURS = {"marque", "ecole", "institution", "culture", "media", "sante"}
 
 def choisir_zones(tarifs, spec, nom, alertes):
     """spec = {"zones": [...]} ou {"region": "..."}"""
-    if spec.get("zones"):
+    if spec.get("france"):
+        zs = [r for r in tarifs if r[3]]
+    elif spec.get("zones"):
         voulues = [z.strip().upper() for z in spec["zones"]]
         zs = [r for r in tarifs if r[3] and r[3].strip().upper() in voulues]
         manq = sorted(set(voulues) - {r[3].strip().upper() for r in zs})
@@ -89,7 +91,7 @@ def choisir_zones(tarifs, spec, nom, alertes):
     elif spec.get("region"):
         zs = [r for r in tarifs if r[0] == spec["region"]]
     else:
-        sys.exit(f"Le brief doit préciser les zones {nom} : \"{nom}\": {{\"zones\": [...]}} ou {{\"region\": \"...\"}}.")
+        sys.exit(f"Le brief doit préciser les zones {nom} : \"{nom}\": {{\"france\": true}} ou {{\"zones\": [...]}} ou {{\"region\": \"...\"}}.")
     if not zs:
         sys.exit(f"Aucune zone {nom} trouvée dans la grille : vérifier l'orthographe (colonne Zone ou Région).")
     return zs
@@ -128,33 +130,65 @@ def main():
     wb = openpyxl.load_workbook(a.tarifs, read_only=True, data_only=True)
     lignes, rows = [], []          # lignes de prix par zone ; établissements
     mix = reseau == "mixte"
+    def norm(v):
+        return unicodedata.normalize("NFKD", str(v or "")).encode("ascii", "ignore").decode().lower().replace("’", "'").strip()
+    def filtre(spec, champs):
+        """champs = {nom_du_filtre: index_colonne}. Garde une ligne si chaque filtre demandé correspond (sous-chaîne)."""
+        f = {k: [norm(x) for x in spec.get(k, [])] for k in champs if spec.get(k)}
+        def ok(r):
+            return all(any(x in norm(r[champs[k]]) for x in vals) for k, vals in f.items())
+        return ok, f
+    ciblages = []
+    def ajouter(nom, tarifs_feuille, base_feuille, spec, col_zone, champs, i_aud, i_odv, i_aff, i_bud, ligne_etab, suffixe):
+        t = [r for r in wb[tarifs_feuille].iter_rows(values_only=True)][1:]
+        zs = choisir_zones(t, spec, nom, alertes)
+        keys = {r[3]: r for r in zs}
+        base = [r for r in wb[base_feuille].iter_rows(values_only=True)][1:]
+        ok, f = filtre(spec, champs)
+        if f:
+            ciblages.extend(v for vals in spec.values() if isinstance(vals, list) for v in vals if v not in spec.get("zones", []))
+        par_zone = {}
+        for r in base:
+            if r[col_zone] in keys:
+                par_zone.setdefault(r[col_zone], [0, []])
+                par_zone[r[col_zone]][0] += 1
+                if ok(r):
+                    par_zone[r[col_zone]][1].append(r)
+        cibles = sum(len(v[1]) for v in par_zone.values())
+        if f and not cibles:
+            sys.exit(f"Ciblage {nom} sans résultat ({f}) : vérifier les valeurs (voir la section Ciblage du LISEZMOI).")
+        for z, r in keys.items():
+            total, gardes = par_zone.get(z, [0, []])
+            ratio = (len(gardes) / total) if (f and total) else (1 if not f else 0)
+            if ratio == 0:
+                continue
+            aff = r[i_aff] or 0
+            lignes.append({"zone": zone_label(z), "label": zone_label(z) + (suffixe if mix else ""),
+                           "aud": round((r[i_aud] or 0) * ratio), "odv": (r[i_odv] or 0) * coef * ratio if i_odv is not None else None,
+                           "aff": max(len(gardes), round(aff * ratio)) if f else aff, "budget": round((r[i_bud] or 0) * coef * ratio, 2)})
+            for e in gardes if f else [x for x in base if x[col_zone] == z]:
+                rows.append(ligne_etab(e))
+        if f:
+            alertes.append(f"Ciblage {nom} appliqué ({cibles} établissements) : affiches, audience, budget et indicateurs au prorata des établissements ciblés de chaque zone.")
+        return zs
+
     if reseau in ("campus", "mixte"):
-        spec = B.get("campus") or {k: B[k] for k in ("zones", "region") if B.get(k)}
-        tc = [r for r in wb["TARIFS_CAMPUS"].iter_rows(values_only=True)][1:]
-        zc = choisir_zones(tc, spec, "campus", alertes)
-        for r in zc:
-            lignes.append({"zone": zone_label(r[3]), "label": zone_label(r[3]) + (" · campus" if mix else ""),
-                           "aud": r[4], "odv": r[7] * coef, "aff": r[8], "budget": r[9] * coef})
-        kc = {r[3] for r in zc}
-        for r in [r for r in wb["BASE_CAMPUS"].iter_rows(values_only=True)][1:]:
-            if r[13] in kc:
-                rows.append([zone_label(r[13]), ville_fr(r[2]), str(r[3] or "").strip(), casse_fr(r[4]), casse_fr(r[5]),
-                             (r[6] or "").strip(), (r[7] or "").strip(), (r[8] or "").strip()])
+        spec = B.get("campus") or {k: B[k] for k in ("zones", "region", "france") if B.get(k)}
+        ajouter("campus", "TARIFS_CAMPUS", "BASE_CAMPUS", spec, 13,
+                {"categories": 7, "disciplines": 8, "villes": 2, "typologies": 6, "etablissements": 5},
+                4, 7, 8, 9,
+                lambda r: [zone_label(r[13]), ville_fr(r[2]), str(r[3] or "").strip(), casse_fr(r[4]), casse_fr(r[5]),
+                           (r[6] or "").strip(), (r[7] or "").strip(), (r[8] or "").strip()], " · campus")
     if reseau in ("lycees", "mixte"):
-        spec = B.get("lycees") or ({k: B[k] for k in ("zones", "region") if B.get(k)} if reseau == "lycees" else {})
-        tl = [r for r in wb["TARIFS_LYCEES"].iter_rows(values_only=True)][1:]
-        zl = choisir_zones(tl, spec, "lycees", alertes)
-        for r in zl:
-            lignes.append({"zone": zone_label(r[3]), "label": zone_label(r[3]) + (" · lycées" if mix else ""),
-                           "aud": r[8] or 0, "odv": None, "aff": r[5], "budget": r[6] * coef})
-        kl = {r[3] for r in zl}
+        spec = B.get("lycees") or ({k: B[k] for k in ("zones", "region", "france") if B.get(k)} if reseau == "lycees" else {})
+        zl = ajouter("lycees", "TARIFS_LYCEES", "BASE_LYCEES", spec, 13,
+                     {"filieres": 15, "villes": 3, "specialites": 6, "etablissements": 0},
+                     8, None, 5, 6,
+                     lambda r: [zone_label(r[13]), ville_fr(r[3]), str(r[2] or "").strip(), casse_fr(r[1]), casse_fr(r[0]),
+                                "Lycée", "Lycée " + (r[15] or "").strip().lower(), (r[6] or "").strip()], " · lycées")
         ng, nr = sum(r[4] or 0 for r in zl), sum(r[7] or 0 for r in zl)
-        if ng != nr:
+        if ng != nr and not any(spec.get(k) for k in ("filieres", "villes", "specialites", "etablissements")):
             alertes.append(f"Grille lycées : prix et affiches calculés sur {ng} lycées, alors que le réseau en liste {nr} : à valider par Johan avant envoi.")
-        for r in [r for r in wb["BASE_LYCEES"].iter_rows(values_only=True)][1:]:
-            if r[13] in kl:
-                rows.append([zone_label(r[13]), ville_fr(r[3]), str(r[2] or "").strip(), casse_fr(r[1]), casse_fr(r[0]),
-                             "Lycée", "Lycée " + (r[15] or "").strip().lower(), (r[6] or "").strip()])
     rows.sort(key=lambda x: (x[0], x[1], x[4]))
     lignes.sort(key=lambda l: l["label"])
 
@@ -270,24 +304,42 @@ def main():
     zones_uniques = sorted({l["zone"] for l in lignes})
     villes = sorted({r[0] for r in rows}); cats = sorted({r[6] for r in rows if r[6]})
     periode = (B.get("periode") or "").strip()
-    if re.search(r"\bsemaines?\b", periode, re.I):      # une durée n'est pas une période
+    if re.search(r"\bsemaines?\b|caler|définir|a definir|preciser|préciser", periode, re.I):   # durée ou formule vide : pas une période
         periode = ""
     liste = ", ".join(zones_uniques[:-1]) + (" et " if len(zones_uniques) > 1 else "") + zones_uniques[-1]
-    zone_txt = B.get("zone_txt") or (("d’" if liste[:1].lower() in "aeiouyhéèêâîô" else "de ") + liste)
+    national = any((B.get(k) or {}).get("france") for k in ("campus", "lycees")) or B.get("france")
+    zone_txt = B.get("zone_txt") or ("de toute la France" if national else (("d’" if liste[:1].lower() in "aeiouyhéèêâîô" else "de ") + liste))
+    JOLI = {"école d'ingénieur": "écoles d'ingénieurs", "école de commerce": "écoles de commerce", "pro": "lycées professionnels",
+            "général": "lycées généraux", "techno": "lycées technologiques", "sciences & ingénierie": "sciences et ingénierie",
+            "iut et but": "IUT", "résidence étudiante": "résidences étudiantes", "restauration étudiante": "restaurants universitaires",
+            "bibliothèque universitaire": "bibliothèques universitaires", "commerce & management": "commerce et management",
+            "droit & sciences po": "droit et sciences politiques", "santé & paramédical": "santé et paramédical",
+            "lettres & sciences humaines": "lettres et sciences humaines", "arts & design": "arts et design",
+            "journalisme & communication": "journalisme et communication", "sport (staps)": "sport (STAPS)"}
+    ciblage_txt = B.get("ciblage_txt") or ", ".join(dict.fromkeys(JOLI.get(c.lower().replace("’", "'"), c.lower()) for c in ciblages))
+    lieux_types = ("écoles", "IUT", "résidences", "restaurants", "bibliothèques", "universités", "lycées")
+    if ciblage_txt and reseau != "mixte" and ciblage_txt.startswith(lieux_types):
+        lieu = "dans les " + ciblage_txt
+    elif ciblage_txt:
+        lieu = f"{RESEAUX[reseau]} ({ciblage_txt})"
+    else:
+        lieu = RESEAUX[reseau]
+    if B.get("sous_titre"):
+        alertes.append("Le champ sous_titre est ignoré : le sous-titre est toujours généré à partir du réseau et du ciblage réels.")
     web = f"{slug}-{code}.html"
     spark = ('<svg class="spark" viewBox="0 0 40 40" aria-hidden="true"><path d="M20 0 C22 14 26 18 40 20 '
              'C26 22 22 26 20 40 C18 26 14 22 0 20 C14 18 18 14 20 0Z"/></svg>')
     V = {
         "CLIENT": E(client), "DATE": E(date_txt), "LOGO": img(os.path.join(A, "logo.png")), "SPARK": spark,
         "CHAT": img(os.path.join(A, "chat_cover.png")), "CIBLE": cible, "MOSAIC": mosaic, "CASES": cases,
-        "SOUS_TITRE": E(B.get("sous_titre") or f"Vos affiches {RESEAUX[reseau]} {zone_txt}" + (f", {periode}" if periode else "")),
+        "SOUS_TITRE": E(f"Vos affiches {lieu} {zone_txt}" + (f", {periode}" if periode else "")),
         "CIBLES_TXT": E(B.get("cibles_txt") or CIBLES[reseau]),
         "VILLES_ZONE": E(", ".join(zones_uniques)), "AFFICHES": n(affiches),
         "DATES_TXT": E(B.get("dates_txt") or f"{duree_txt}" + (f" {periode}" if periode else "") + ", dates à caler ensemble."),
         "ZONES_ROWS": zones_rows, "REACH": n(reach), "SOUS_TOTAL": eur(sous_total), "TOTAL_HT": eur(total_ht),
         "TAUX": n(taux * 100), "REMISE": eur(remise), "TVA": eur(tva), "TTC": eur(ttc), "DUREE_TXT": duree_txt,
         "KPIS": "\n".join(kpis), "BARS": bars, "PROFIL": E(B.get("profil") or PROFILS[reseau]),
-        "FILIERES": E(B.get("filieres", "Toutes filières")), "FREQUENCE": E(B.get("frequence") or FREQ[reseau]),
+        "FILIERES": E(B.get("filieres_txt") or (ciblage_txt[:1].upper() + ciblage_txt[1:] if ciblage_txt else "Toutes filières")), "FREQUENCE": E(B.get("frequence") or FREQ[reseau]),
         "NB_SEM": str(min(sem, 12)), "WEEKS": "".join(f"<span>S{i + 1}</span>" for i in range(min(sem, 12))),
         "PERIODE_COURTE": E(B.get("periode_courte") or (periode[:1].upper() + periode[1:] if periode else "Dates à caler ensemble")),
         "XLSX_URL": f"{BASE_URL}/{xlsx}", "OPT_ZONES": "".join(f"<option>{E(v)}</option>" for v in villes),
