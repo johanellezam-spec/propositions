@@ -9,5 +9,11 @@
  "dates_txt": "4 semaines en janvier 2027, dates à caler ensemble.",
  "periode_courte": "Rentrée de janvier 2027",
  "secteur": "marque",
- "cas": ["hela", "icn", "edc", "region-idf"]
+ "cas": [
+  "hela",
+  "icn",
+  "edc",
+  "region-idf"
+ ],
+ "reseau": "campus"
 }

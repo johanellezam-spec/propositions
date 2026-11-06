@@ -1,0 +1,14 @@
+{
+ "client": "Lycée Essai",
+ "reseau": "lycees",
+ "lycees": {
+  "zones": [
+   "AIX-EN-PROVENCE",
+   "MARSEILLE",
+   "NICE"
+  ]
+ },
+ "semaines": 3,
+ "periode": "en mars 2027",
+ "secteur": "ecole"
+}

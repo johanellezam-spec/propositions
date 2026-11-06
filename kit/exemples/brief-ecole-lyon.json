@@ -1,6 +1,12 @@
 {
  "client": "École Essai",
- "zones": ["LYON", "GRENOBLE"],
+ "reseau": "campus",
+ "campus": {
+  "zones": [
+   "LYON",
+   "GRENOBLE"
+  ]
+ },
  "semaines": 2,
  "periode": "en septembre 2027",
  "periode_courte": "Rentrée de septembre 2027",

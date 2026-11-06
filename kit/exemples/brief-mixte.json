@@ -1,0 +1,18 @@
+{
+ "client": "Mixte Essai",
+ "reseau": "mixte",
+ "campus": {
+  "zones": [
+   "NANTES",
+   "ANGERS"
+  ]
+ },
+ "lycees": {
+  "zones": [
+   "NANTES"
+  ]
+ },
+ "semaines": 4,
+ "periode": "avant Noël 2026",
+ "secteur": "institution"
+}
