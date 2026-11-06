@@ -49,31 +49,33 @@ par mail pour ajuster. Le client peut télécharger le PDF et l'Excel depuis la 
 
 ## Champs du brief
 
-```json
-{
- "client": "Nom de l'annonceur",
- "region": "Provence-Alpes-Côte d’Azur",
- "zones": ["LYON", "GRENOBLE"],
- "zone_txt": "de la région PACA",
- "semaines": 4,
- "periode": "à la rentrée de janvier 2027",
- "dates_txt": "4 semaines en janvier 2027, dates à caler ensemble.",
- "periode_courte": "Rentrée de janvier 2027",
- "secteur": "marque",
- "cas": ["icn", "figaro"],
- "masquer_cpm": [],
- "profil": "Étudiants de 18 à 27 ans",
- "filieres": "Toutes filières"
-}
-```
+**Obligatoires** (le script refuse un brief incomplet) : lis-les dans la demande du client.
 
-- `region` **ou** `zones` (noms exacts de la colonne Zone de `TARIFS_CAMPUS`). Seul `client` est obligatoire en plus.
-- `semaines` : la grille est en 4 semaines ; une autre durée est calculée au prorata et signalée en alerte (à valider par Johan).
-- `secteur` : `marque`, `ecole`, `institution`, `culture`, `media`, `sante`. Sert à choisir les cas clients
-  et à mettre les logos du même secteur en premier. `cas` force une sélection précise (ids de `assets/cas.json`).
-- `masquer_cpm` : `["audience"]` et/ou `["exposition"]` remplace un CPM trop mauvais par un autre indicateur
-  (règle de Johan : seulement pour les deux CPM). Le script alerte si le CPM audience dépasse 60 €.
-- `code` et `date` sont automatiques (code aléatoire de 4 caractères, date du jour).
+| Champ | Valeurs | Exemple |
+|---|---|---|
+| `client` | nom de l'annonceur | `"Tartiflette"` |
+| `reseau` | `campus`, `lycees` ou `mixte` (campus + lycées) | `"mixte"` |
+| `secteur` | `marque`, `ecole`, `institution`, `culture`, `media`, `sante` : le secteur DU CLIENT | `"ecole"` |
+| `semaines` | durée demandée (4 si la demande ne dit rien, et le dire dans le mail) | `3` |
+| `periode` | quand, en toutes lettres, tel que le client l'écrit | `"avant Noël 2026"` |
+
+**Zones** (noms exacts de la colonne Zone des grilles) :
+- `campus` : `{"zones": ["NANTES", "ANGERS"]}` ou `{"region": "Pays de la Loire"}` (grille TARIFS_CAMPUS)
+- `lycees` : même format (grille TARIFS_LYCEES)
+- mixte : renseigner les deux blocs.
+
+**Facultatifs** : `zone_txt` (« de la région PACA »), `periode_courte`, `dates_txt`, `profil`, `filieres`, `frequence`,
+`cas` (ids de `assets/cas.json` pour forcer les cas clients), `masquer_cpm`, `sous_titre`, `code`, `date`.
+
+Exemples complets dans `exemples/` : campus (Tartiflette), lycées, mixte.
+
+Ce que le kit adapte tout seul selon `reseau` : sous-titre (campus / lycées / campus et lycées), cibles, profil
+(étudiants / lycéens), section « Notre cible » (retirée pour les lycées seuls), indicateurs (ODV et CPM exposition
+seulement pour le campus), détail par zone (« Nantes · lycées »), Excel. Les semaines (S1, S2…) suivent `semaines`.
+Les cas clients suivent `secteur` et changent d'un client à l'autre.
+
+Alertes à transmettre à Johan : durée différente de 4 semaines (prorata), CPM audience élevé, réseau lycées
+(sujets sensibles), écart entre le nombre de lycées de la grille et celui du réseau.
 
 ## Règles qui ne changent pas
 
