@@ -57,14 +57,13 @@ par mail pour ajuster. Le client peut télécharger le PDF et l'Excel depuis la 
 | `reseau` | `campus`, `lycees` ou `mixte` (campus + lycées) | `"mixte"` |
 | `secteur` | `marque`, `ecole`, `institution`, `culture`, `media`, `sante` : le secteur DU CLIENT | `"ecole"` |
 | `semaines` | durée demandée (4 si la demande ne dit rien, et le dire dans le mail) | `3` |
-| `periode` | quand, en toutes lettres, tel que le client l'écrit | `"avant Noël 2026"` |
 
 **Zones** (noms exacts de la colonne Zone des grilles) :
 - `campus` : `{"zones": ["NANTES", "ANGERS"]}` ou `{"region": "Pays de la Loire"}` (grille TARIFS_CAMPUS)
 - `lycees` : même format (grille TARIFS_LYCEES)
 - mixte : renseigner les deux blocs.
 
-**Facultatifs** : `zone_txt` (« de la région PACA »), `periode_courte`, `dates_txt`, `profil`, `filieres`, `frequence`,
+**Facultatifs** : `periode` (tel que le client l'écrit, même flou : « en mars 2027 », « à la rentrée » ; jamais de date inventée ; sans période, la page dit « dates à caler ensemble »), `zone_txt` (« de la région PACA »), `periode_courte`, `dates_txt`, `profil`, `filieres`, `frequence`,
 `cas` (ids de `assets/cas.json` pour forcer les cas clients), `masquer_cpm`, `sous_titre`, `code`, `date`.
 
 Exemples complets dans `exemples/` : campus (Tartiflette), lycées, mixte.

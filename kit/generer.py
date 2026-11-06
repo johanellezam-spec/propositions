@@ -97,10 +97,10 @@ def main():
     alertes = []
 
     # --- Brief : champs obligatoires (lus dans la demande du client) ---
-    manque = [k for k in ("client", "reseau", "secteur", "semaines", "periode") if not B.get(k)]
+    manque = [k for k in ("client", "reseau", "secteur", "semaines") if not B.get(k)]
     if manque:
         sys.exit("Brief incomplet, champs obligatoires manquants : " + ", ".join(manque) +
-                 ". Relis la demande : réseau (campus / lycees / mixte), secteur du client, nombre de semaines, période.")
+                 ". Relis la demande : réseau (campus / lycees / mixte), secteur du client, nombre de semaines (4 si la demande ne dit rien).")
     reseau = B["reseau"].strip().lower().replace("é", "e")
     if reseau not in RESEAUX:
         sys.exit("reseau doit valoir campus, lycees ou mixte.")
@@ -257,7 +257,7 @@ def main():
                          f"<td class='num'>{eur(l['budget'])}</td></tr>" for l in lignes)
     zones_uniques = sorted({l["zone"] for l in lignes})
     villes = sorted({r[0] for r in rows}); cats = sorted({r[6] for r in rows if r[6]})
-    periode = B["periode"].strip()
+    periode = (B.get("periode") or "").strip()
     liste = ", ".join(zones_uniques[:-1]) + (" et " if len(zones_uniques) > 1 else "") + zones_uniques[-1]
     zone_txt = B.get("zone_txt") or (("d’" if liste[:1].lower() in "aeiouyhéèêâîô" else "de ") + liste)
     web = f"{slug}-{code}.html"
@@ -266,16 +266,16 @@ def main():
     V = {
         "CLIENT": E(client), "DATE": E(date_txt), "LOGO": img(os.path.join(A, "logo.png")), "SPARK": spark,
         "CHAT": img(os.path.join(A, "chat_cover.png")), "CIBLE": cible, "MOSAIC": mosaic, "CASES": cases,
-        "SOUS_TITRE": E(B.get("sous_titre") or f"Vos affiches {RESEAUX[reseau]} {zone_txt}, {periode}"),
+        "SOUS_TITRE": E(B.get("sous_titre") or f"Vos affiches {RESEAUX[reseau]} {zone_txt}" + (f", {periode}" if periode else "")),
         "CIBLES_TXT": E(B.get("cibles_txt") or CIBLES[reseau]),
         "VILLES_ZONE": E(", ".join(zones_uniques)), "AFFICHES": n(affiches),
-        "DATES_TXT": E(B.get("dates_txt") or f"{duree_txt} {periode}, dates à caler ensemble."),
+        "DATES_TXT": E(B.get("dates_txt") or f"{duree_txt}" + (f" {periode}" if periode else "") + ", dates à caler ensemble."),
         "ZONES_ROWS": zones_rows, "REACH": n(reach), "SOUS_TOTAL": eur(sous_total), "TOTAL_HT": eur(total_ht),
         "TAUX": n(taux * 100), "REMISE": eur(remise), "TVA": eur(tva), "TTC": eur(ttc), "DUREE_TXT": duree_txt,
         "KPIS": "\n".join(kpis), "BARS": bars, "PROFIL": E(B.get("profil") or PROFILS[reseau]),
         "FILIERES": E(B.get("filieres", "Toutes filières")), "FREQUENCE": E(B.get("frequence") or FREQ[reseau]),
         "NB_SEM": str(min(sem, 12)), "WEEKS": "".join(f"<span>S{i + 1}</span>" for i in range(min(sem, 12))),
-        "PERIODE_COURTE": E(B.get("periode_courte") or periode[:1].upper() + periode[1:]),
+        "PERIODE_COURTE": E(B.get("periode_courte") or (periode[:1].upper() + periode[1:] if periode else "Dates à caler ensemble")),
         "XLSX_URL": f"{BASE_URL}/{xlsx}", "OPT_ZONES": "".join(f"<option>{E(v)}</option>" for v in villes),
         "OPT_CATS": "".join(f"<option>{E(c)}</option>" for c in cats), "NB_ETAB": str(len(rows)),
         "WEB_URL": f"{BASE_URL}/{web}", "WEB_URL_TXT": f"{BASE_URL}/{web}".replace("https://", ""), "WALL": wall,
