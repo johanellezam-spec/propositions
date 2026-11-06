@@ -1,0 +1,13 @@
+{
+ "client": "Tartiflette",
+ "code": "q8vd",
+ "date": "6 novembre 2026",
+ "region": "Provence-Alpes-Côte d’Azur",
+ "zone_txt": "de la région PACA",
+ "semaines": 4,
+ "periode": "à la rentrée de janvier 2027",
+ "dates_txt": "4 semaines en janvier 2027, dates à caler ensemble.",
+ "periode_courte": "Rentrée de janvier 2027",
+ "secteur": "marque",
+ "cas": ["hela", "icn", "edc", "region-idf"]
+}
