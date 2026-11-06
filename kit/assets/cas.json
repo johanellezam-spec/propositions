@@ -1,0 +1,340 @@
+[
+ {
+  "id": "hela",
+  "client": "Hela",
+  "secteur": "marque",
+  "tag": "Grande consommation",
+  "note": 9,
+  "texte": "Son ketchup sur les pâtes, « c'est aussi un peu de la cuisine ».",
+  "photos": [
+   {
+    "f": "hela-cafeteria.jpg",
+    "pos": "72% 40%"
+   }
+  ]
+ },
+ {
+  "id": "creditmutuel",
+  "client": "Crédit Mutuel",
+  "secteur": "marque",
+  "tag": "Banque",
+  "note": 8,
+  "texte": "Ses bons plans pour les 18-28 ans, toute l'année.",
+  "photos": [
+   {
+    "f": "creditmutuel-hall.jpg",
+    "pos": "20% 40%"
+   }
+  ]
+ },
+ {
+  "id": "kangouroukids",
+  "client": "Kangourou Kids",
+  "secteur": "marque",
+  "tag": "Services",
+  "note": 8,
+  "texte": "Son job étudiant de garde d'enfants, « le job qui te fait aussi grandir ».",
+  "photos": [
+   {
+    "f": "kangouroukids-accueil.jpg",
+    "pos": "75% 40%"
+   }
+  ]
+ },
+ {
+  "id": "ccoop",
+  "client": "Crédit Coopératif",
+  "secteur": "marque",
+  "tag": "Banque",
+  "note": 7.5,
+  "texte": "Son offre jeunes « Rejoins le club des Zéros ».",
+  "photos": [
+   {
+    "f": "ccoop-hall.jpg",
+    "pos": "30% 40%"
+   }
+  ]
+ },
+ {
+  "id": "aivancity",
+  "client": "aivancity",
+  "secteur": "ecole",
+  "tag": "École",
+  "note": 9,
+  "texte": "La Grande École de l'IA et de la Data présentée aux futurs étudiants.",
+  "photos": [
+   {
+    "f": "aivancity-hall.jpg",
+    "pos": "35% 40%"
+   },
+   {
+    "f": "aivancity-entree.jpg",
+    "pos": "50% 40%"
+   }
+  ]
+ },
+ {
+  "id": "icn",
+  "client": "ICN Business School",
+  "secteur": "ecole",
+  "tag": "École",
+  "note": 9,
+  "texte": "Ses programmes présentés aux étudiants, flyers à l'appui.",
+  "photos": [
+   {
+    "f": "icn-cafeteria.jpg",
+    "pos": "40% 50%"
+   },
+   {
+    "f": "icn-couloir.jpg",
+    "pos": "50% 30%"
+   },
+   {
+    "f": "icn-escalier.jpg",
+    "pos": "70% 40%"
+   }
+  ]
+ },
+ {
+  "id": "edc",
+  "client": "EDC Paris",
+  "secteur": "ecole",
+  "tag": "École",
+  "note": 8,
+  "texte": "Son programme Grande École financé par l'alternance.",
+  "photos": [
+   {
+    "f": "edc-entree.jpg",
+    "pos": "50% 50%"
+   },
+   {
+    "f": "edc-escalier.jpg",
+    "pos": "25% 40%"
+   }
+  ]
+ },
+ {
+  "id": "ef",
+  "client": "EF Education First",
+  "secteur": "ecole",
+  "tag": "Études à l'étranger",
+  "note": 8.5,
+  "texte": "Son salon Go International des études à l'étranger.",
+  "photos": [
+   {
+    "f": "ef-hall.jpg",
+    "pos": "70% 40%"
+   }
+  ]
+ },
+ {
+  "id": "isegcom",
+  "client": "ISEGCOM",
+  "secteur": "ecole",
+  "tag": "École",
+  "note": 8,
+  "texte": "Son programme pour les déçus de leur première orientation.",
+  "photos": [
+   {
+    "f": "isegcom-hall.jpg",
+    "pos": "15% 40%"
+   }
+  ]
+ },
+ {
+  "id": "cfadescartes",
+  "client": "CFA Descartes SUP",
+  "secteur": "ecole",
+  "tag": "Formation",
+  "note": 8,
+  "texte": "Ses formations du supérieur : « Passez en mode SUP ».",
+  "photos": [
+   {
+    "f": "cfa-descartes-couloir.jpg",
+    "pos": "50% 40%"
+   }
+  ]
+ },
+ {
+  "id": "collegeuniversel",
+  "client": "Collège Universel",
+  "secteur": "ecole",
+  "tag": "Études à l'étranger",
+  "note": 8,
+  "texte": "Ses études supérieures au Québec, toutes les possibilités.",
+  "photos": [
+   {
+    "f": "college-universel-espace.jpg",
+    "pos": "20% 40%"
+   }
+  ]
+ },
+ {
+  "id": "region-idf",
+  "client": "Région Île-de-France",
+  "secteur": "institution",
+  "tag": "Collectivité",
+  "note": 9,
+  "texte": "Son pass de 100 € pour acheter des livres sur LABAZ.",
+  "photos": [
+   {
+    "f": "region-idf-labaz.jpg",
+    "pos": "45% 50%"
+   }
+  ]
+ },
+ {
+  "id": "enm",
+  "client": "École nationale de la magistrature",
+  "secteur": "institution",
+  "tag": "Institution",
+  "note": 8.5,
+  "texte": "Son concours pour devenir juge ou procureur.",
+  "photos": [
+   {
+    "f": "enm-amphi.jpg",
+    "pos": "40% 50%"
+   }
+  ]
+ },
+ {
+  "id": "urssaf",
+  "client": "Urssaf Île-de-France",
+  "secteur": "institution",
+  "tag": "Institution",
+  "note": 8.5,
+  "texte": "Son recrutement : « un métier qui a du sens ».",
+  "photos": [
+   {
+    "f": "urssaf-bibliotheque.jpg",
+    "pos": "50% 40%"
+   }
+  ]
+ },
+ {
+  "id": "insee",
+  "client": "Insee",
+  "secteur": "institution",
+  "tag": "Institution",
+  "note": 8.5,
+  "texte": "Son application Insee Mobile, des données fiables à portée de main.",
+  "photos": [
+   {
+    "f": "insee-bibliotheque.jpg",
+    "pos": "30% 40%"
+   }
+  ]
+ },
+ {
+  "id": "montpellier",
+  "client": "Montpellier Méditerranée Métropole",
+  "secteur": "institution",
+  "tag": "Collectivité",
+  "note": 8.5,
+  "texte": "La gratuité des transports, avec son pass à demander ou renouveler.",
+  "photos": [
+   {
+    "f": "montpellier-bibliotheque.jpg",
+    "pos": "40% 40%"
+   }
+  ]
+ },
+ {
+  "id": "loireatlantique",
+  "client": "Département de Loire-Atlantique",
+  "secteur": "institution",
+  "tag": "Collectivité",
+  "note": 8.5,
+  "texte": "Son budget participatif pour les 16-25 ans.",
+  "photos": [
+   {
+    "f": "loire-atlantique-hall.jpg",
+    "pos": "50% 40%"
+   }
+  ]
+ },
+ {
+  "id": "figaro",
+  "client": "Le Figaro",
+  "secteur": "media",
+  "tag": "Médias",
+  "note": 7,
+  "texte": "Son abonnement à 1,99 € par mois pour les moins de 27 ans.",
+  "photos": [
+   {
+    "f": "figaro-espace.jpg",
+    "pos": "12% 40%"
+   }
+  ]
+ },
+ {
+  "id": "dunod",
+  "client": "Dunod",
+  "secteur": "media",
+  "tag": "Édition",
+  "note": 9,
+  "texte": "Sa collection pour réussir sa L1, au cœur des campus.",
+  "photos": [
+   {
+    "f": "dunod-hall.jpg",
+    "pos": "30% 40%"
+   }
+  ]
+ },
+ {
+  "id": "fontevraud",
+  "client": "Abbaye royale de Fontevraud",
+  "secteur": "culture",
+  "tag": "Culture",
+  "note": 9,
+  "texte": "Son événement Contretemps, utopies et visions du futur.",
+  "photos": [
+   {
+    "f": "fontevraud-cafeteria.jpg",
+    "pos": "72% 40%"
+   }
+  ]
+ },
+ {
+  "id": "versailles",
+  "client": "Château de Versailles",
+  "secteur": "culture",
+  "tag": "Culture",
+  "note": 8,
+  "texte": "Son exposition « L'autre Versailles, 150 ans au cœur de la République ».",
+  "photos": [
+   {
+    "f": "versailles-couloir.jpg",
+    "pos": "30% 50%"
+   }
+  ]
+ },
+ {
+  "id": "parismanga",
+  "client": "Paris Manga & Sci-Fi Show",
+  "secteur": "culture",
+  "tag": "Événement",
+  "note": 9,
+  "texte": "Sa 38e édition annoncée aux étudiants.",
+  "photos": [
+   {
+    "f": "parismanga-bibliotheque.jpg",
+    "pos": "80% 40%"
+   }
+  ]
+ },
+ {
+  "id": "goldencoast",
+  "client": "Golden Coast",
+  "secteur": "culture",
+  "tag": "Festival",
+  "note": 7.5,
+  "texte": "Son rapfest de septembre à Dijon annoncé aux étudiants.",
+  "photos": [
+   {
+    "f": "goldencoast-hall.jpg",
+    "pos": "25% 40%"
+   }
+  ]
+ }
+]

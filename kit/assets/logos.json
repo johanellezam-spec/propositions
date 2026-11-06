@@ -1,0 +1,212 @@
+[
+ {
+  "id": "doritos",
+  "nom": "Doritos",
+  "secteur": "marque",
+  "w": 71,
+  "h": 58
+ },
+ {
+  "id": "hela",
+  "nom": "Hela",
+  "secteur": "marque",
+  "w": 78,
+  "h": 55
+ },
+ {
+  "id": "creditmutuel",
+  "nom": "Crédit Mutuel",
+  "secteur": "marque",
+  "w": 132,
+  "h": 28
+ },
+ {
+  "id": "lcl",
+  "nom": "LCL",
+  "secteur": "marque",
+  "w": 58,
+  "h": 58
+ },
+ {
+  "id": "pwc",
+  "nom": "PwC",
+  "secteur": "marque",
+  "w": 94,
+  "h": 46
+ },
+ {
+  "id": "urw",
+  "nom": "Unibail-Rodamco-Westfield",
+  "secteur": "marque",
+  "w": 126,
+  "h": 34
+ },
+ {
+  "id": "colas",
+  "nom": "Colas",
+  "secteur": "marque",
+  "w": 115,
+  "h": 37
+ },
+ {
+  "id": "hachette",
+  "nom": "Hachette Livre",
+  "secteur": "media",
+  "w": 116,
+  "h": 37
+ },
+ {
+  "id": "kangouroukids",
+  "nom": "Kangourou Kids",
+  "secteur": "marque",
+  "w": 113,
+  "h": 38
+ },
+ {
+  "id": "hopteo",
+  "nom": "Hopteo",
+  "secteur": "marque",
+  "w": 81,
+  "h": 53
+ },
+ {
+  "id": "creditcoop",
+  "nom": "Crédit Coopératif",
+  "secteur": "marque",
+  "w": 108,
+  "h": 40
+ },
+ {
+  "id": "figaro",
+  "nom": "Le Figaro",
+  "secteur": "media",
+  "w": 132,
+  "h": 18
+ },
+ {
+  "id": "seriesmania",
+  "nom": "Séries Mania",
+  "secteur": "culture",
+  "w": 102,
+  "h": 42
+ },
+ {
+  "id": "memorial",
+  "nom": "Mémorial de la Shoah",
+  "secteur": "culture",
+  "w": 58,
+  "h": 58
+ },
+ {
+  "id": "versailles",
+  "nom": "Château de Versailles",
+  "secteur": "culture",
+  "w": 132,
+  "h": 11
+ },
+ {
+  "id": "fontevraud",
+  "nom": "Abbaye de Fontevraud",
+  "secteur": "culture",
+  "w": 111,
+  "h": 39
+ },
+ {
+  "id": "ef",
+  "nom": "EF Education First",
+  "secteur": "ecole",
+  "w": 87,
+  "h": 50
+ },
+ {
+  "id": "epita",
+  "nom": "EPITA",
+  "secteur": "ecole",
+  "w": 80,
+  "h": 54
+ },
+ {
+  "id": "audencia",
+  "nom": "Audencia",
+  "secteur": "ecole",
+  "w": 132,
+  "h": 30
+ },
+ {
+  "id": "fff",
+  "nom": "FFF",
+  "secteur": "institution",
+  "w": 45,
+  "h": 58
+ },
+ {
+  "id": "ffr",
+  "nom": "FFR",
+  "secteur": "institution",
+  "w": 37,
+  "h": 58
+ },
+ {
+  "id": "has",
+  "nom": "Haute Autorité de Santé",
+  "secteur": "sante",
+  "w": 107,
+  "h": 40
+ },
+ {
+  "id": "insee",
+  "nom": "Insee",
+  "secteur": "institution",
+  "w": 132,
+  "h": 32
+ },
+ {
+  "id": "urssaf",
+  "nom": "Urssaf",
+  "secteur": "institution",
+  "w": 116,
+  "h": 37
+ },
+ {
+  "id": "assurancemaladie",
+  "nom": "Assurance Maladie",
+  "secteur": "sante",
+  "w": 119,
+  "h": 36
+ },
+ {
+  "id": "carsat",
+  "nom": "Carsat",
+  "secteur": "institution",
+  "w": 108,
+  "h": 40
+ },
+ {
+  "id": "msa",
+  "nom": "MSA",
+  "secteur": "institution",
+  "w": 93,
+  "h": 46
+ },
+ {
+  "id": "inrs",
+  "nom": "INRS",
+  "secteur": "sante",
+  "w": 100,
+  "h": 43
+ },
+ {
+  "id": "rennes",
+  "nom": "Rennes Métropole",
+  "secteur": "institution",
+  "w": 114,
+  "h": 38
+ },
+ {
+  "id": "montpellier",
+  "nom": "Montpellier Méditerranée Métropole",
+  "secteur": "institution",
+  "w": 59,
+  "h": 58
+ }
+]
