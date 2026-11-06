@@ -1,0 +1,21 @@
+{
+ "client": "Ciblage Essai",
+ "reseau": "mixte",
+ "campus": {
+  "france": true,
+  "categories": [
+   "École D'Ingénieur"
+  ]
+ },
+ "lycees": {
+  "zones": [
+   "LYON"
+  ],
+  "filieres": [
+   "Pro"
+  ]
+ },
+ "semaines": 4,
+ "secteur": "ecole",
+ "periode": "au printemps 2027"
+}
