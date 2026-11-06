@@ -63,8 +63,12 @@ par mail pour ajuster. Le client peut télécharger le PDF et l'Excel depuis la 
 - `lycees` : même format (grille TARIFS_LYCEES)
 - mixte : renseigner les deux blocs.
 
-**Facultatifs** : `periode` (tel que le client l'écrit, même flou : « en mars 2027 », « à la rentrée » ; jamais de date inventée ; sans période, la page dit « dates à caler ensemble »), `zone_txt` (« de la région PACA »), `periode_courte`, `dates_txt`, `profil`, `filieres`, `frequence`,
-`cas` (ids de `assets/cas.json` pour forcer les cas clients), `masquer_cpm`, `sous_titre`, `code`, `date`.
+**Facultatifs** : `periode` (tel que le client l'écrit, même flou : « en mars 2027 », « à la rentrée » ; jamais de date inventée, jamais une durée comme « sur 8 semaines » ; sans période, la page dit « dates à caler ensemble »), `zone_txt` (« de la région PACA »), `periode_courte`, `dates_txt`, `profil`, `filieres`, `frequence`,
+`cas` (ids de `assets/cas.json` pour forcer les cas clients), `masquer_cpm` / `garder_cpm`, `sous_titre`, `code`, `date`.
+
+CPM (règle de Johan, seulement pour ces deux indicateurs) : le kit remplace automatiquement un CPM audience
+au-delà de 60 € et un CPM exposition au-delà de 1 € par un autre indicateur, et le signale en alerte.
+`garder_cpm: ["audience"]` force l'affichage, `masquer_cpm` force le retrait.
 
 Exemples complets dans `exemples/` : campus (Tartiflette), lycées, mixte.
 
@@ -73,7 +77,7 @@ Ce que le kit adapte tout seul selon `reseau` : sous-titre (campus / lycées / c
 seulement pour le campus), détail par zone (« Nantes · lycées »), Excel. Les semaines (S1, S2…) suivent `semaines`.
 Les cas clients suivent `secteur` et changent d'un client à l'autre.
 
-Alertes à transmettre à Johan : durée différente de 4 semaines (prorata), CPM audience élevé, réseau lycées
+Alertes à transmettre à Johan : durée différente de 4 semaines (prorata), CPM remplacé, réseau lycées
 (sujets sensibles), écart entre le nombre de lycées de la grille et celui du réseau.
 
 ## Règles qui ne changent pas

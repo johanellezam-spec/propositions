@@ -59,7 +59,13 @@ def casse_fr(v):
         else:
             out.append(m)
     return re.sub(r"-(En|De|Du|Sur|Les|La|Le)-", lambda m: "-" + m.group(1).lower() + "-", "".join(out))
+ACCENTS = {"ANNEÇY": "Annecy", "BESANCON": "Besançon", "BEZIER": "Béziers", "CHAMBERY": "Chambéry",
+           "CHATEAUROUX": "Châteauroux", "EVREUX": "Évreux", "NIMES": "Nîmes", "ORLEANS": "Orléans",
+           "SAINT-ETIENNE": "Saint-Étienne", "ÎLE-DE-FRANCE": "Île-de-France"}
 def zone_label(z):
+    z = (z or "").strip()
+    if z.upper() in ACCENTS:
+        return ACCENTS[z.upper()]
     return " – ".join(ville_fr(p) for p in z.split(" - "))
 
 RESEAUX = {"campus": "sur les campus", "lycees": "dans les lycées", "mixte": "sur les campus et dans les lycées"}
@@ -186,7 +192,7 @@ def main():
     # --- Cas clients et photos (secteur du client d'abord, ordre propre à chaque client) ---
     CAS = json.load(open(os.path.join(A, "cas.json"), encoding="utf-8"))
     rng = random.Random(slug)
-    cle = lambda c: (-c.get("note", 0) // 1, rng.random())
+    cle = lambda c: (0 if c.get("note", 0) >= 8 else 1, rng.random())
     if B.get("cas"):
         choix = [c for i in B["cas"] for c in CAS if c["id"] == i]
     else:
@@ -228,19 +234,25 @@ def main():
     # --- Indicateurs ---
     aud = AUD[reseau]
     masquer = set(B.get("masquer_cpm", []))
+    garder = set(B.get("garder_cpm", []))
+    if cpm_a > 60 and "audience" not in garder and "audience" not in masquer:
+        masquer.add("audience")
+        alertes.append(f"CPM audience de {eur(cpm_a)} jugé trop élevé : remplacé automatiquement sur la page (règle de Johan). Pour l'afficher quand même : \"garder_cpm\": [\"audience\"].")
+    if cpm_e and cpm_e > 1 and "exposition" not in garder and "exposition" not in masquer:
+        masquer.add("exposition")
+        alertes.append(f"CPM exposition de {eur(cpm_e)} jugé trop élevé : remplacé automatiquement sur la page.")
     kpi = lambda k, v, t, hl=False: f"<div class=\"kpi{' hl' if hl else ''}\"><span class=\"k\">{k}</span><b>{v}</b><p>{t}</p></div>"
-    kpis = [kpi("Reach – audience unique", n(reach), f"{aud} touchés par votre campagne", True)]
+    cand = [kpi("Reach – audience unique", n(reach), f"{aud} touchés par votre campagne", True)]
     if odv:
-        kpis.append(kpi("ODV – occasions de voir", f"{n(odv / 1e6, 1)}<small>millions</small>", "expositions potentielles, répétitions incluses"))
-    else:
-        kpis.append(kpi("Établissements", n(len(rows)), "lieux d’affichage sélectionnés"))
-    kpis.append(kpi("CPM audience", eur(cpm_a), f"pour toucher 1{NB}000 {aud}") if "audience" not in masquer
-                else kpi("Affiches", n(affiches), "au format A2, impression incluse"))
+        cand.append(kpi("ODV – occasions de voir", f"{n(odv / 1e6, 1)}<small>millions</small>", "expositions potentielles, répétitions incluses"))
+    if "audience" not in masquer:
+        cand.append(kpi("CPM audience", eur(cpm_a), f"pour toucher 1{NB}000 {aud}"))
     if odv and "exposition" not in masquer:
-        kpis.append(kpi("CPM exposition", eur(cpm_e), f"pour 1{NB}000 expositions"))
-    else:
-        kpis.append(kpi("Affiches", n(affiches), "au format A2, impression incluse") if "audience" not in masquer
-                    else kpi("Établissements", n(len(rows)), "lieux d’affichage sélectionnés"))
+        cand.append(kpi("CPM exposition", eur(cpm_e), f"pour 1{NB}000 expositions"))
+    cand += [kpi("Établissements", n(len(rows)), "lieux d’affichage sélectionnés"),
+             kpi("Affiches", n(affiches), "au format A2, impression incluse"),
+             kpi("Villes", n(len({l["zone"] for l in lignes})), "zones couvertes par la campagne")]
+    kpis = cand[:4]
 
     max_aud = max(l["aud"] for l in lignes) or 1
     bars = "".join(f"<div class='bar'><span class='bl'>{E(l['label'])}</span><span class='bt'><i style='width:{l['aud'] / max_aud * 100:.1f}%'></i></span>"
@@ -258,6 +270,8 @@ def main():
     zones_uniques = sorted({l["zone"] for l in lignes})
     villes = sorted({r[0] for r in rows}); cats = sorted({r[6] for r in rows if r[6]})
     periode = (B.get("periode") or "").strip()
+    if re.search(r"\bsemaines?\b", periode, re.I):      # une durée n'est pas une période
+        periode = ""
     liste = ", ".join(zones_uniques[:-1]) + (" et " if len(zones_uniques) > 1 else "") + zones_uniques[-1]
     zone_txt = B.get("zone_txt") or (("d’" if liste[:1].lower() in "aeiouyhéèêâîô" else "de ") + liste)
     web = f"{slug}-{code}.html"
@@ -292,8 +306,6 @@ def main():
     if reseau == "lycees" or reseau == "mixte":
         alertes.append("Réseau lycées : certains sujets ne peuvent pas être abordés auprès des lycéens ; vérifier le message avec Johan.")
     open(os.path.join(a.out, web), "w", encoding="utf-8").write(page)
-    if cpm_a > 60:
-        alertes.append(f"CPM audience élevé ({eur(cpm_a)}) : voir avec Johan s'il faut le remplacer (\"masquer_cpm\": [\"audience\"]).")
 
     print(json.dumps({
         "page": f"{BASE_URL}/{web}", "excel": f"{BASE_URL}/{xlsx}", "fichiers": [web, xlsx], "reseau": reseau,
