@@ -34,9 +34,15 @@ Cette méthode remplace toutes les anciennes (PDF Canva, img2pdf, liens raw.gith
    N'utiliser jamais `git add -A`, `git add .` ni `git commit -a`. Si le garde-fou affiche STOP, ne rien pousser et prévenir Johan.
    Si le clone partiel échoue, refaire le clone sans `--filter=blob:none --no-checkout` (et sans `git reset`).
    Ne jamais supprimer ni modifier un fichier déjà publié (les autres propositions sont chez les clients).
-5. **Vérifier avant tout envoi** : `curl -s -o /dev/null -w "%{http_code}" <lien page>` puis `<lien excel>`,
-   toutes les 20 secondes, 10 minutes au maximum, jusqu'à obtenir 200 pour les deux. Sans 200, on n'envoie pas
-   et on prévient Johan. La publication prend en général 1 à 2 minutes.
+5. **Vérifier avant tout envoi** : depuis le cloud, le domaine propositions.mediahubcampus.com n'est pas joignable
+   avec curl. On vérifie donc la publication auprès de GitHub :
+   ```bash
+   SHA=$(git rev-parse HEAD)
+   curl -s "https://api.github.com/repos/johanellezam-spec/propositions/actions/runs?branch=claude/propositions&per_page=5"
+   ```
+   Chercher le run dont `head_sha` = `$SHA` ; attendre `status` = `completed` et `conclusion` = `success`
+   (toutes les 20 secondes, 10 minutes au maximum). Sans succès, on n'envoie pas et on prévient Johan.
+   La publication prend en général 1 à 2 minutes.
 
 Puis brouillon du mail : lien de la page seul (pas de pièce jointe), quelques chiffres clés, une invitation à répondre
 par mail pour ajuster. Le client peut télécharger le PDF et l'Excel depuis la page.
