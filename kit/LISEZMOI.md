@@ -99,6 +99,15 @@ CPM (règle de Johan, seulement pour ces deux indicateurs) : le kit remplace aut
 au-delà de 60 € et un CPM exposition au-delà de 1 € par un autre indicateur, et le signale en alerte.
 `garder_cpm: ["audience"]` force l'affichage, `masquer_cpm` force le retrait.
 
+## Reprise d'une ancienne proposition (copie stricte)
+
+Pour remettre au nouveau format une proposition déjà envoyée (PDF Canva, lien github.io, Excel), on recopie ses données,
+on ne refait pas le chiffrage. Brief : mêmes zones, réseau, semaines et `date` que l'ancienne, plus un bloc `reprise` lu
+dans l'ancien document :
+`"reprise": {"degressif": 20, "odv": 1416000, "affiches": 177, "reach": 23400, "total_ht": 1244}`.
+`degressif` (en %) et `odv` sont imposés ; `affiches`, `reach` et `total_ht` sont contrôlés : au moindre écart le script
+s'arrête sans rien générer. Dans ce cas, relancer avec l'ancien lien réécrit en propositions.mediahubcampus.com et prévenir Johan.
+
 Exemples complets dans `exemples/` : campus (Tartiflette), lycées, mixte.
 
 Ce que le kit adapte tout seul selon `reseau` : sous-titre (campus / lycées / campus et lycées), cibles, profil

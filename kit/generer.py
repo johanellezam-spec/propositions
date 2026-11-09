@@ -205,6 +205,29 @@ def main():
     cpm_a = total_ht / reach * 1000 if reach else 0
     cpm_e = total_ht / odv * 1000 if odv else None
 
+    # --- Reprise à l'identique d'une ancienne proposition (copie stricte, consigne de Johan du 09/11/2026) ---
+    # "reprise": {"degressif": 20, "odv": 1416000, "affiches": 177, "reach": 23400, "total_ht": 1244}
+    # degressif et odv sont imposés ; affiches, reach et total_ht sont des contrôles : tout écart arrête le script.
+    R = B.get("reprise") or {}
+    if R:
+        if "degressif" in R:
+            taux = R["degressif"] / 100
+            remise = round(sous_total * taux, 2)
+            total_ht = round(sous_total - remise, 2)
+            tva = round(total_ht * .20, 2)
+            ttc = round(total_ht + tva, 2)
+        if R.get("odv"):
+            odv = R["odv"]
+        cpm_a = total_ht / reach * 1000 if reach else 0
+        cpm_e = total_ht / odv * 1000 if odv else None
+        ecarts = [f"{k} : ancienne proposition {R[k]}, kit {v}" for k, v in
+                  (("affiches", affiches), ("reach", reach), ("total_ht", total_ht))
+                  if k in R and round(float(R[k]), 2) != round(float(v), 2)]
+        if ecarts:
+            sys.exit("Reprise impossible à l'identique, rien n'est généré : " + " ; ".join(ecarts) +
+                     ". Relancer avec l'ancien lien et prévenir Johan.")
+        alertes.append("Reprise d'une ancienne proposition : remise et ODV imposés, affiches, audience et total HT contrôlés.")
+
     # --- Excel du réseau ---
     cols = ["Zone", "Ville", "Code postal", "Adresse", "Établissement", "Typologie d’étude", "Catégorie", "Discipline"]
     os.makedirs(a.out, exist_ok=True)
