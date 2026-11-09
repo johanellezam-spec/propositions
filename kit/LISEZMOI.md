@@ -81,6 +81,7 @@ indicateurs, le réseau et l'Excel suivent automatiquement le ciblage.
 | `specialites` | lycees | texte libre (ex. « Cpge ») |
 | `villes` | les deux | nom de ville (ex. « Villeurbanne ») pour cibler une ville précise dans une zone |
 | `etablissements` | les deux | nom d'établissement (ex. « Sorbonne ») |
+| `lignes` | campus | établissements précis ajoutés en plus du ciblage, au format `"Ville\|École - Campus\|Typologie"` exactement comme dans BASE_CAMPUS (ex. annexes d'un campus santé : restaurant universitaire, BU) |
 
 Exemples :
 - « toutes les écoles d'ingénieurs » : `"campus": {"france": true, "categories": ["École D'Ingénieur"]}`

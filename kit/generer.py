@@ -142,9 +142,15 @@ def main():
         exc = [norm(x) for x in spec.get("exclure", [])] if txt else []
         if inc: f["texte"] = inc
         if exc: f["exclure"] = exc
+        ids = {" | ".join(norm(x) for x in k.split("|")) for k in spec.get("lignes", [])} if txt else set()
+        if ids: f["lignes"] = sorted(ids)
         def ok(r):
             t = " | ".join(norm(r[i]) for i in txt)
-            return (all(any(x in norm(r[champs[k]]) for x in vals) for k, vals in f.items() if k not in ("texte", "exclure"))
+            if ids and " | ".join(norm(r[i]) for i in (2,) + tuple(txt)) in ids:
+                return True
+            if ids and not (inc or exc or any(k not in ("texte", "exclure", "lignes") for k in f)):
+                return False
+            return (all(any(x in norm(r[champs[k]]) for x in vals) for k, vals in f.items() if k not in ("texte", "exclure", "lignes"))
                     and (not inc or any(x in t for x in inc)) and not any(x in t for x in exc))
         return ok, f
     ciblages = []
@@ -155,7 +161,7 @@ def main():
         base = [r for r in wb[base_feuille].iter_rows(values_only=True)][1:]
         ok, f = filtre(spec, champs)
         if f:
-            ciblages.extend(v for k2, vals in spec.items() if isinstance(vals, list) and k2 not in ("texte", "exclure")
+            ciblages.extend(v for k2, vals in spec.items() if isinstance(vals, list) and k2 not in ("texte", "exclure", "lignes")
                             for v in vals if v not in spec.get("zones", []))
         par_zone = {}
         for r in base:
