@@ -133,10 +133,19 @@ def main():
     def norm(v):
         return unicodedata.normalize("NFKD", str(v or "")).encode("ascii", "ignore").decode().lower().replace("’", "'").strip()
     def filtre(spec, champs):
-        """champs = {nom_du_filtre: index_colonne}. Garde une ligne si chaque filtre demandé correspond (sous-chaîne)."""
-        f = {k: [norm(x) for x in spec.get(k, [])] for k in champs if spec.get(k)}
+        """champs = {nom_du_filtre: index_colonne}. Garde une ligne si chaque filtre demandé correspond (sous-chaîne).
+        "texte" / "exclure" : mots cherchés dans le nom de l'établissement et sa typologie (colonnes champs["_txt"]) ;
+        la ligne est gardée si un mot de "texte" y figure et aucun mot de "exclure"."""
+        txt = champs.get("_txt", ())
+        f = {k: [norm(x) for x in spec.get(k, [])] for k in champs if k != "_txt" and spec.get(k)}
+        inc = [norm(x) for x in spec.get("texte", [])] if txt else []
+        exc = [norm(x) for x in spec.get("exclure", [])] if txt else []
+        if inc: f["texte"] = inc
+        if exc: f["exclure"] = exc
         def ok(r):
-            return all(any(x in norm(r[champs[k]]) for x in vals) for k, vals in f.items())
+            t = " | ".join(norm(r[i]) for i in txt)
+            return (all(any(x in norm(r[champs[k]]) for x in vals) for k, vals in f.items() if k not in ("texte", "exclure"))
+                    and (not inc or any(x in t for x in inc)) and not any(x in t for x in exc))
         return ok, f
     ciblages = []
     def ajouter(nom, tarifs_feuille, base_feuille, spec, col_zone, champs, i_aud, i_odv, i_aff, i_bud, ligne_etab, suffixe):
@@ -146,7 +155,8 @@ def main():
         base = [r for r in wb[base_feuille].iter_rows(values_only=True)][1:]
         ok, f = filtre(spec, champs)
         if f:
-            ciblages.extend(v for vals in spec.values() if isinstance(vals, list) for v in vals if v not in spec.get("zones", []))
+            ciblages.extend(v for k2, vals in spec.items() if isinstance(vals, list) and k2 not in ("texte", "exclure")
+                            for v in vals if v not in spec.get("zones", []))
         par_zone = {}
         for r in base:
             if r[col_zone] in keys:
@@ -175,7 +185,7 @@ def main():
     if reseau in ("campus", "mixte"):
         spec = B.get("campus") or {k: B[k] for k in ("zones", "region", "france") if B.get(k)}
         ajouter("campus", "TARIFS_CAMPUS", "BASE_CAMPUS", spec, 13,
-                {"categories": 7, "disciplines": 8, "villes": 2, "typologies": 6, "etablissements": 5},
+                {"categories": 7, "disciplines": 8, "villes": 2, "typologies": 6, "etablissements": 5, "_txt": (5, 6)},
                 4, 7, 8, 9,
                 lambda r: [zone_label(r[13]), ville_fr(r[2]), str(r[3] or "").strip(), casse_fr(r[4]), casse_fr(r[5]),
                            (r[6] or "").strip(), (r[7] or "").strip(), (r[8] or "").strip()], " · campus")
