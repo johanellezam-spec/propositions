@@ -209,6 +209,30 @@ def main():
     # "reprise": {"degressif": 20, "odv": 1416000, "affiches": 177, "reach": 23400, "total_ht": 1244}
     # degressif et odv sont imposés ; affiches, reach et total_ht sont des contrôles : tout écart arrête le script.
     R = B.get("reprise") or {}
+    if R and R.get("reseau_xlsx"):
+        # Réseau choisi à la main dans l'ancienne proposition : on reprend sa liste d'établissements telle quelle
+        # et ses totaux (sous_total, affiches, reach) ; le détail par zone devient une seule ligne (zones_txt).
+        manq = [k for k in ("sous_total", "affiches", "reach", "zones_txt") if k not in R]
+        if manq:
+            sys.exit("Reprise avec reseau_xlsx : champs manquants dans reprise : " + ", ".join(manq) + ".")
+        old = [r for r in openpyxl.load_workbook(R["reseau_xlsx"], read_only=True).active.iter_rows(values_only=True)]
+        h = [norm(x) for x in old[0]]
+        def col(*noms):
+            for nm in noms:
+                for j, x in enumerate(h):
+                    if x.startswith(norm(nm)):
+                        return j
+            return None
+        ix = [col("zone", "ville"), col("ville"), col("code postal"), col("adresse"), col("etablissement", "ecole"),
+              col("typologie"), col("categorie"), col("discipline")]
+        rows = sorted([[str(r[j]).strip() if j is not None and r[j] is not None else "" for j in ix] for r in old[1:] if any(r)],
+                      key=lambda x: (x[0], x[1], x[4]))
+        sous_total, affiches, reach = round(float(R["sous_total"]), 2), int(R["affiches"]), int(R["reach"])
+        lignes = [{"label": R["zones_txt"], "zone": R["zones_txt"], "aff": affiches, "aud": reach, "budget": sous_total, "odv": None}]
+        odv = None
+        remise = round(sous_total * taux, 2); total_ht = round(sous_total - remise, 2)
+        tva = round(total_ht * .20, 2); ttc = round(total_ht + tva, 2)
+        alertes.append(f"Reprise du réseau de l'ancienne proposition ({len(rows)} établissements) et de ses totaux, sans recalcul par la grille.")
     if R:
         if "degressif" in R:
             taux = R["degressif"] / 100
@@ -221,7 +245,7 @@ def main():
         cpm_a = total_ht / reach * 1000 if reach else 0
         cpm_e = total_ht / odv * 1000 if odv else None
         ecarts = [f"{k} : ancienne proposition {R[k]}, kit {v}" for k, v in
-                  (("affiches", affiches), ("reach", reach), ("total_ht", total_ht))
+                  (("affiches", affiches), ("reach", reach), ("total_ht", total_ht), ("total_ttc", ttc))
                   if k in R and round(float(R[k]), 2) != round(float(v), 2)]
         if ecarts:
             sys.exit("Reprise impossible à l'identique, rien n'est généré : " + " ; ".join(ecarts) +

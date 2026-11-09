@@ -108,6 +108,11 @@ dans l'ancien document :
 `degressif` (en %) et `odv` sont imposés ; `affiches`, `reach` et `total_ht` sont contrôlés : au moindre écart le script
 s'arrête sans rien générer. Dans ce cas, relancer avec l'ancien lien réécrit en propositions.mediahubcampus.com et prévenir Johan.
 
+Si l'ancien réseau a été choisi à la main (le kit ne retombe pas sur les mêmes affiches ni la même audience), reprendre
+aussi son Excel : ajouter dans `reprise` `"reseau_xlsx": "<ancien Excel téléchargé>"`, `"zones_txt": "Toute la France (31 zones)"`,
+`"sous_total"`, `"affiches"`, `"reach"` (lus dans l'ancien PDF), et `"total_ttc"` en contrôle. La liste des établissements, les
+totaux et le texte des cibles (`cibles_txt`, `filieres_txt`, `ciblage_txt`) sont alors ceux de l'ancienne proposition.
+
 Exemples complets dans `exemples/` : campus (Tartiflette), lycées, mixte.
 
 Ce que le kit adapte tout seul selon `reseau` : sous-titre (campus / lycées / campus et lycées), cibles, profil
