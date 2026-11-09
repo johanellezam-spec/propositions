@@ -113,6 +113,10 @@ aussi son Excel : ajouter dans `reprise` `"reseau_xlsx": "<ancien Excel téléch
 `"sous_total"`, `"affiches"`, `"reach"` (lus dans l'ancien PDF), et `"total_ttc"` en contrôle. La liste des établissements, les
 totaux et le texte des cibles (`cibles_txt`, `filieres_txt`, `ciblage_txt`) sont alors ceux de l'ancienne proposition.
 
+Si un chiffre de l'ancienne proposition diffère de la grille (ex. audience), on le recopie quand même :
+`"imposer": ["reach"]` (ou `"affiches"`) dans `reprise`, avec `"zones_txt"` ; le détail par zone devient une seule ligne
+et l'écart est signalé à Johan dans les alertes.
+
 Exemples complets dans `exemples/` : campus (Tartiflette), lycées, mixte.
 
 Ce que le kit adapte tout seul selon `reseau` : sous-titre (campus / lycées / campus et lycées), cibles, profil

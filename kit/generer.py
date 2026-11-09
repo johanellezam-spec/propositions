@@ -242,6 +242,15 @@ def main():
             ttc = round(total_ht + tva, 2)
         if R.get("odv"):
             odv = R["odv"]
+        imp = [k for k in R.get("imposer", []) if k in ("reach", "affiches")]
+        if imp:
+            # Valeur de l'ancienne proposition différente de la grille : on la recopie telle quelle et, pour rester
+            # cohérent, le détail par zone devient une seule ligne (zones_txt).
+            if "reach" in imp: reach = int(R["reach"])
+            if "affiches" in imp: affiches = int(R["affiches"])
+            zt = R.get("zones_txt") or ", ".join(sorted({l["zone"] for l in lignes}))
+            lignes = [{"label": zt, "zone": zt, "aff": affiches, "aud": reach, "budget": sous_total, "odv": None}]
+            alertes.append(f"Valeurs imposées depuis l'ancienne proposition ({', '.join(imp)}) : différentes de la grille, à signaler à Johan.")
         cpm_a = total_ht / reach * 1000 if reach else 0
         cpm_e = total_ht / odv * 1000 if odv else None
         ecarts = [f"{k} : ancienne proposition {R[k]}, kit {v}" for k, v in
