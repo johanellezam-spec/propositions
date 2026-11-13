@@ -94,7 +94,8 @@ il est toujours généré par le kit (champ `sous_titre` ignoré). Si la demande
 prendre le réseau complet et poser la question au client dans le mail.
 
 **Facultatifs** : `ciblage_txt` (libellé du ciblage si le libellé automatique ne convient pas), `filieres_txt`, `periode` (tel que le client l'écrit, même flou : « en mars 2027 », « à la rentrée » ; jamais de date inventée, jamais une durée comme « sur 8 semaines » ; sans période, la page dit « dates à caler ensemble »), `zone_txt` (« de la région PACA »), `periode_courte`, `dates_txt`, `profil`, `frequence`,
-`cas` (ids de `assets/cas.json` pour forcer les cas clients), `masquer_cpm` / `garder_cpm`, `code`, `date`.
+`cas` (ids de `assets/cas.json` pour forcer les cas clients), `masquer_cpm` / `garder_cpm`, `code`, `date`,
+`materiel_extra` (phrase ajoutée à la ligne « Matériel » de la page, ex. distribution de flyers en complément des affiches, au même budget : jamais un prix inventé).
 
 CPM (règle de Johan, seulement pour ces deux indicateurs) : le kit remplace automatiquement un CPM audience
 au-delà de 60 € et un CPM exposition au-delà de 1 € par un autre indicateur, et le signale en alerte.

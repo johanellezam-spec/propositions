@@ -407,6 +407,7 @@ def main():
         "SOUS_TITRE": E(f"Vos affiches {lieu} {zone_txt}" + (f", {periode}" if periode else "")),
         "CIBLES_TXT": E(B.get("cibles_txt") or CIBLES[reseau]),
         "VILLES_ZONE": E(", ".join(zones_uniques)), "AFFICHES": n(affiches),
+        "MATERIEL_EXTRA": (" " + E(B["materiel_extra"])) if B.get("materiel_extra") else "",
         "DATES_TXT": E(B.get("dates_txt") or f"{duree_txt}" + (f" {periode}" if periode else "") + ", dates à caler ensemble."),
         "ZONES_ROWS": zones_rows, "REACH": n(reach), "SOUS_TOTAL": eur(sous_total), "TOTAL_HT": eur(total_ht),
         "TAUX": n(taux * 100), "REMISE": eur(remise), "TVA": eur(tva), "TTC": eur(ttc), "DUREE_TXT": duree_txt,
