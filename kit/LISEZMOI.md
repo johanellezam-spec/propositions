@@ -16,7 +16,7 @@ Cette méthode remplace toutes les anciennes (PDF Canva, img2pdf, liens raw.gith
 
 ## Procédure (5 étapes)
 
-1. **Tarifs** : télécharger la grille `regie_tarification_finale.xlsx` (Google Drive, id `1Az51E5ckKInaU59RTQ0kmt4vmOeXy1Xi`)
+1. **Tarifs** : télécharger la grille `regie_tarification_finale.xlsx` (Google Drive, id `1orzX_0h0_TVJkaiVt8PdHDO2lgXbn7k8`)
    et la décoder en `/tmp/tarifs.xlsx`. C'est la seule source des prix : ne jamais inventer un prix.
 2. **Brief** : écrire `/tmp/brief.json` (voir les champs ci-dessous).
 3. **Générer** : `python3 kit/generer.py /tmp/brief.json --tarifs /tmp/tarifs.xlsx --out /tmp/sortie`
